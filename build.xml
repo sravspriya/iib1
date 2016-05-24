@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Test" default="Create_bar" basedir=".">
+	<property file="ucd.properties"></property>
+	 <taskdef resource="net/sf/antcontrib/antlib.xml">
+	 <classpath>
+    <pathelement location="C:\apache-ant-1.9.6\lib\antcontrib.jar"/>
+     </classpath>
+	 </taskdef>
+     <!-- Making Windows command environment  -->
+	 <target name="mqsiprofile.cmd">
+	 <exec executable="${broker.mqsi.path}\mqsiprofile.cmd" />
+	 </target>
+	<!-- Creating a bar file -->
+		<target name="Create_bar">
+			<for list="${project_name}" delimiter="," param="pName">
+				<sequential>
+				<echo message="@{pName}"/>
+				<exec executable="${toolkit.home}\mqsicreatebar.exe" spawn="false" vmlauncher="false" failonerror="true">
+					<!-- project's workspace-->
+					<arg value="-data" />
+					<arg value="${workspaces.dir}" />
+					<!--barfile generated path-->
+					<arg value="-b" />
+					<arg value="${bar.loc}\@{pName}.msgflow.generated.bar" />
+					<!--project Name-->
+					<arg value="-p" />
+					<arg value="@{pName}" />
+					<!--Message flows for its corresponding projects which has given in cvsCheckout.properties-->
+					<arg value="-o" />
+					<arg line="${workspaces.dir}\@{pname}\${@{pName}.flow_name}" />
+					<arg value="-deployAsSource" />
+				</exec>	
+				</sequential>
+		    </for>
+		</target>
+		
+	</project>
